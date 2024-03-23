@@ -1,11 +1,12 @@
 import { createContext, useEffect, useState } from "react";
-import {GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
+import {GithubAuthProvider, GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
 import auth from "../firebase/firebase.config";
 
 export const AuthContext = createContext(null)
 
 
 const GoogleProvider = new GoogleAuthProvider();
+const githubProvider = new GithubAuthProvider();
 
 const AuthProvider = ({children}) => {
 
@@ -31,6 +32,12 @@ const AuthProvider = ({children}) => {
         return signInWithPopup(auth , GoogleProvider)
     }
 
+    const signInWithGithub = () => {
+        setLoading(true)
+        return signInWithPopup(auth , githubProvider)
+    }
+
+    // Effect hook to listen for authentication state changes
     useEffect(()=>{
              const unSubscribe = onAuthStateChanged(auth , currUser =>{
              setUser(currUser)
@@ -49,7 +56,8 @@ const AuthProvider = ({children}) => {
        signInUser,
        logOut ,
        loading,
-       signInWithGoogle
+       signInWithGoogle,
+       signInWithGithub
     }
     return (
         <AuthContext.Provider value={obj}>
