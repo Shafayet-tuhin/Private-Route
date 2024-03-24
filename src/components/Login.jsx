@@ -1,14 +1,25 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthProvider";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+import Swal from 'sweetalert2'
 
 const Login = () => {
 
-  const { signInUser, signInWithGoogle , signInWithGithub } = useContext(AuthContext)
+  const { signInUser, signInWithGoogle, signInWithGithub , resetPassword } = useContext(AuthContext)
+  const [email , setEmail] = useState(null)
+  const [error , setError] = useState(null) ;
 
   const navigate = useNavigate();
+
+
+  const handleAlert = () => {
+    Swal.fire({
+      title: "Registered Successfully ",
+      icon: "success"
+  });
+}
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -18,31 +29,45 @@ const Login = () => {
 
     signInUser(email, password)
       .then((res) => {
+        handleAlert();
         console.log(res.user)
         e.target.reset();
         navigate('/')
       })
       .catch((err) => {
         console.log(err.message)
+        setError("Wrong id or password")
       })
   }
 
   const handleGoogleSignIn = () => {
     signInWithGoogle()
       .then((res) => {
+        handleAlert();
+        console.log(res.user)
+        navigate('/')
+      })
+      .catch((er) => console.log(er))
+  }
+
+  const handleGithubSignIn = () => {
+    signInWithGithub()
+      .then((res) => {
+        handleAlert();
         console.log(res.user)
         navigate('/')
       })
       .catch((er) => console.log(er))
   }
   
-  const handleGithubSignIn = () => {
-    signInWithGithub()
-    .then((res) => {
-      console.log(res.user)
-      navigate('/')
-    })
-    .catch((er) => console.log(er))
+  
+
+  const handleReset = () => {
+      resetPassword(email)
+      Swal.fire({
+        title: "Please Check your Email",
+        icon: "success"
+    });
   }
 
   return (
@@ -59,6 +84,7 @@ const Login = () => {
                 <span className="label-text">Email</span>
               </label>
               <input
+                onChange={(e)=> setEmail(e.target.value)}
                 type="email"
                 name="email"
                 placeholder="email"
@@ -78,8 +104,10 @@ const Login = () => {
                 required
               />
 
+              {error && <p className='text-red-500 text-lg mt-4 font-normal'>{error}</p>}
+
               <label className="label">
-                <a href="#" className="label-text-alt link link-hover">
+                <a onClick={handleReset} href="#" className="label-text-alt link link-hover">
                   Forgot password?
                 </a>
               </label>
@@ -93,8 +121,8 @@ const Login = () => {
               <div >
                 <h2 className=" text-sky-700">Or Login Using</h2>
                 <div className="flex gap-5 justify-center mt-2 text-2xl">
-                <button onClick={handleGoogleSignIn} className=""><FcGoogle /> </button>
-                <button onClick={handleGithubSignIn} className=""><FaGithub/> </button>
+                  <button onClick={handleGoogleSignIn} className=""><FcGoogle /> </button>
+                  <button onClick={handleGithubSignIn} className=""><FaGithub /> </button>
                 </div>
               </div>
             </div>

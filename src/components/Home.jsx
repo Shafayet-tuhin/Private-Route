@@ -10,7 +10,7 @@ const Home = () => {
     if (!email) return ""; // Return empty string if email is not provided
     return email.split("@")[0];
   };
-
+ console.log("home user" , user)
   return (
     <div
       className="hero min-h-screen"
@@ -22,14 +22,26 @@ const Home = () => {
       <div className="hero-overlay bg-opacity-60"></div>
       <div className="hero-content text-center text-neutral-content">
         <div className="max-w-md">
-          <h1 className="mb-5 text-5xl font-bold">
-            Welcome
-            {user
-              ? `, ${getUsernameFromEmail(user.email) || "Bro"}`
-              : " Bro"}
-          </h1>
+
+  
+          <div className="flex gap-2 justify-center"> 
+            <div>
+                  {
+                     user && user.photoURL && <img className="w-36 h-28 rounded-2xl" src={user.photoURL} alt="" />
+                  }
+            </div>
+            <div>
+              <h1 className="mb-5 text-5xl font-bold">
+                {
+                  user ?  `Welcome ${user.displayName}` : "Welcome Stranger"
+                }
+              </h1>
+            </div>
+          </div>
+
+
           <p className="mb-5">
-          My name is Tuhin, and I am a software developer. I recently implemented Firebase-based authentication into my projects. Leveraging Firebase's authentication services, I've created secure login systems, allowing users to sign up, log in, and access personalized content. Integrating Firebase's authentication features has streamlined the user authentication process, enhancing the security and usability of my applications.
+            My name is Tuhin, and I am a software developer. I recently implemented Firebase-based authentication into my projects. Leveraging Firebase's authentication services, I've created secure login systems, allowing users to sign up, log in, and access personalized content. Integrating Firebase's authentication features has streamlined the user authentication process, enhancing the security and usability of my applications.
           </p>
           {user ? (
             <Link to="/profile">
